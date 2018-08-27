@@ -817,6 +817,15 @@ class test_Channel(Case):
                 ))
                 self.assertEqual(connparams['path'], '/tmp/redis.sock')
 
+    def test_rediss_connection(self):
+        with patch('kombu.transport.redis.Channel._create_client'):
+            with Connection('rediss://') as conn:
+                connparams = conn.default_channel._connparams()
+                assert issubclass(
+                    connparams['connection_class'],
+                    redis.redis.SSLConnection,
+                )
+
 
 class test_Redis(Case):
 
